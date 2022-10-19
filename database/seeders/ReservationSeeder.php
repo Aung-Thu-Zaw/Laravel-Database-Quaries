@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Comment;
+use App\Models\Reservation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CommentSeeder extends Seeder
+class ReservationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,6 +15,6 @@ class CommentSeeder extends Seeder
      */
     public function run()
     {
-       Comment::factory(30)->create();
+        Reservation::factory(10)->create();
     }
 }

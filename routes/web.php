@@ -17,79 +17,205 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    // try {
-    //     $dbc = new PDO('mysql:host='.env('DB_HOST'), env('DB_USERNAME'), env('DB_PASSWORD'));
-    //     $charset = config('database.connections.mysql.charset');
-    //     $collation = config('database.connections.mysql.collation');
-    //     $query = "CREATE DATABASE IF NOT EXISTS ". env('DB_DATABASE') . " CHARACTER SET $charset COLLATE $collation;";
-    //     $dbc->exec($query);
-    // } catch (PDOException $e) {
-    //     echo $e->getMessage();
-    // }
+    // $users=DB::table("users")->get();
 
+    // $users=DB::table("users")->pluck("name");
 
+    // $users=DB::table("users")->where("name", "=", "Sage Grant DDS")->first();
 
-    // This query is for mysql
-    // $user=DB::select("select * from users where id = ?", [1]);
+    // $users=DB::table("users")->where("name", "=", "Sage Grant DDS")->value("email");
 
-    // This query is for sqlite
-    // $users=DB::connection("sqlite")->select("select * from users");
+    // $users=DB::table("users")->find(1);
 
-    // @dd("mysql", $user);
-    // @dd("sqlite", $users);
+    // $comments=DB::table("comments")->select("content as comment_content")->get();
 
-    // ==========================================================
+    // $comments=DB::table("comments")->select("user_id")->distinct()->get();
 
-    // $pdo = DB::connection(/*'sqlite'*/)->getPdo();
-    // $users = $pdo->query('select * from users')->fetchAll();
+    // ======================== Aggregate Function ========================
 
-    // $result = DB::select('select * from users where id = ? and name = ?', [1, 'Adalberto Gerlach']);
-    // $result = DB::select('select * from users where id = :id', ['id' => 1]);
+    // $result=DB::table("comments")->count();
 
-    // DB::insert('insert into users (name, email,password) values (?, ?, ?)', ['Inserted Name', 'email@fdf.fd','passw']);
+    // $result=DB::table("comments")->max("user_id");
 
-    // $affected = DB::update('update users set email = "updatedemail@email.com" where email = ?', ['email@fdf.fd']);
+    // $result=DB::table("comments")->min("user_id");
 
-    // $deleted = DB::delete('delete from users where id = ?',[4]);
+    // $result=DB::table("comments")->sum("user_id");
 
-    // DB::statement('truncate table users');
+    // $result=DB::table("comments")->avg("user_id");
 
-    // $result = DB::select('select * from users');
+    // $result=DB::table("comments")->where("content", "content")->exists();
 
+    // $result=DB::table("comments")->where("content", "content")->doesntExist();
 
-    // +++++++++++++QueryBuilder Style Query++++++++++++++
-    // $result = DB::table('users')->select()->get();
+    // ======================== Where Clause ========================
 
-    // +++++++++++++ElquentORM Style Query++++++++++++++
-    // $result = User::all();
+    // $result=DB::table("rooms")->where("price", "<", 500)->get();
 
-    // @dd($result);
+    // $result=DB::table("rooms")->where([
+    //    [ "room_size",2],
+    //    ["price", "<", 500]
+    // ])->get();
 
-    // ==========================================================
-    // DB::transaction(function () {
-    //     try {
-    //         DB::table('users')->delete();
-    //         $result=DB::table("users")->where("id", 4)->update(["email"=>"none"]);
+    // $result=DB::table("rooms")->where("room_size", 2)->orWhere("price", "<", 500)->get();
 
-    //         if (!$result) {
-    //             throw new Exception();
-    //         }
-    //     } catch(Exception $err) {
-    //         DB::rollBack();
+    // $result=DB::table("rooms")->where("price", "<", 500)->orWhere(function ($query) {
+    //     $query->where("room_size", ">", "1")
+    //     ->where("room_size", "<", "4");
+    // })->get();
+
+    // $result=DB::table("rooms")->whereBetween("room_size", [1,3])->get();
+
+    // $result=DB::table("rooms")->whereIn("room_size", [1,2,3])->get();
+
+    // $result=DB::table("rooms")->whereNotIn("room_size", [1,2,3])->get();
+
+    // $result=DB::table("rooms")->whereNull("price")->get();
+
+    // $result=DB::table("rooms")->whereNotNull("price")->get();
+
+    // $result=DB::table("rooms")->whereMonth("created_at",now())->get();
+
+    // $result=DB::table("rooms")->whereDate("created_at", now())->get();
+
+    // $result=DB::table("rooms")->whereYear("created_at", now())->get();
+
+    // $result=DB::table("rooms")->whereDay("created_at", now())->get();
+
+    // $result=DB::table("rooms")->whereTime("created_at", now())->get();
+
+    // $result=DB::table("rooms")->whereColumn("room_number", ">", "room_size")->get();
+
+    // $result=DB::table("rooms")->select("id")->whereColumn([
+    //     ["room_number", ">", "room_size"],
+    //     ["updated_at","created_at"]
+    // ])->get();
+
+    // $result=DB::table("users")->whereExists(function ($query) {
+    //     $query->select("id")
+    //     ->from("reservations")
+    //     ->whereRaw("reservations.user_id=users.id")
+    //     ->where("check_in", "2022-10-15")
+    //     ->limit(1);
+    // })->get();
+
+    // ======================== Json Clause ========================
+
+    // $result=DB::table("users")->whereJsonContains("meta->skills", "CSS-3")->get();
+
+    // $result=DB::table("users")->where("meta->settings->site_language", "en")->get();
+
+    // ======================== Pagination ========================
+
+    // $result=DB::table("comments")->paginate(1);
+
+    // $result=DB::table("comments")->simplePaginate(1);
+
+    // ======================== Raw Sql Expression ========================
+
+    // $result=DB::table("comments")
+    // ->where("content", "like", "%dolores%")
+    // ->whereRaw("content like '%dolores%'")
+    // ->get();
+
+    // $result=DB::table("comments")
+    // ->selectRaw("count(user_id) as number_of_comments, users.name")
+    // // ->select(DB::raw("count(user_id) as number_of_comments, users.name"))
+    // ->join("users", "users.id", "=", "comments.user_id")
+    // ->groupBy("user_id")
+    // ->get();
+
+    // whereRaw / orWhereRaw
+    // havingRaw / orHavingRaw
+    // orderByRaw
+    // groupByRaw
+
+    // =================== Order, Group, Limit, Offset ===================
+
+    // $result=DB::table("users")->orderBy("name", "desc")->get();
+
+    // $result=DB::table("users")->orderBy("name", "desc")->get();
+
+    // $result=DB::table("users")->inRandomOrder()->first();
+
+    // $result=DB::table("comments")
+    // ->selectRaw("count(id) as number_of_5stars_comments, rating")
+    // ->groupBy("rating")
+    // ->where("rating", "=", 5)
+    // ->get();
+
+    // $result=DB::table("comments")
+    // ->skip(5)
+    // ->take(5)
+    // ->get();
+
+    // $result=DB::table("comments")
+    // ->offset(5)
+    // ->limit(5)
+    // ->get();
+
+    // =================== Conditional Clauses And Chunking Result ===================
+
+    // $room_id=1;
+
+    // $result=DB::table("reservations")
+    // ->when($room_id, function ($query, $room_id) {
+    //     return $query->where("room_id", $room_id);
+    // })
+    // ->get();
+
+    // $sortBy=null;
+    // $result=DB::table("reservations")
+    // ->when($sortBy, function ($query, $sortBy) {
+    //     return $query->orderBy("id", $sortBy);
+    // }, function ($query) {
+    //     return $query->orderBy("room_id");
+    // })
+    // ->get();
+
+    // $result=DB::table("comments")->orderBy("id")->chunk(2,function($comments){
+    //     foreach($comments as $comment){
+    //          if($comment->id==5){
+    //              return false;
+    //          };
     //     }
+    // });
 
-    // DB::table("users")->where("id", 3)->update(["email"=>"none@none.none"]);
+    // Useful for adminstration tasks
+    // $result=DB::table("comments")->orderBy("id")->chunkById(2, function ($comments) {
+    //     foreach ($comments as $comment) {
+    //         DB::table("comments")
+    //         ->where("id", $comment->id)
+    //         ->update(["rating"=>null]);
+    //     }
+    // });
 
-    // }, 5);
+    // =================== Insert, Update, Delete Statement ===================
 
-    // $result = DB::table('users')->select()->get();
+    // $result=DB::table("rooms")->insert([
+    //     ["room_number"=>1,"room_size"=>1,"price"=>1,"description"=>"new description 1"],
+    //     ["room_number"=>2,"room_size"=>2,"price"=>2,"description"=>"new description 2"]
+    // ]);
 
-    // $result = User::all();
-    // @dd($result);
+    // $result=DB::table("rooms")->insertGetId(
+    //     ["room_number"=>1,"room_size"=>1,"price"=>1,"description"=>"new description 1"]
+    // );
 
-    // ==========================================================
+    // $result=DB::table("rooms")->where("id", 1)->update(["price"=>1000]);
 
-    @dd(Comment::factory(3)->create());
+    // $result=DB::table("users")->where("id", 1)->update(["meta->settings->site_language"=>"my"]);
 
+    // $affected=DB::table("rooms")->where("id", "1")->increment("price", 5000);
+
+    // $affected=DB::table("rooms")->where("id", "1")->decrement("price", 600, ["description"=>"New Description Hun!"]);
+
+    // $result=DB::table("users")->delete(1);
+
+    // $result=DB::table("users")->where("id", "2")->delete();
+
+    // $result=DB::table("reservations")->truncate();
+
+
+
+    // dump($result);
     return view('welcome');
 });

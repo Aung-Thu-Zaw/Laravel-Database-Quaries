@@ -12,11 +12,12 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_id")->references("id")->on("users")->onDelete("cascade");
-            $table->text("content");
-            $table->integer("rating")->nullable();
+            $table->integer("room_number");
+            $table->integer("room_size");
+            $table->integer("price");
+            $table->text("description");
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('rooms');
     }
 };

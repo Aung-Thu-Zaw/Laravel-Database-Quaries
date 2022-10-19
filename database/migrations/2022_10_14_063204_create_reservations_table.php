@@ -12,11 +12,12 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_id")->references("id")->on("users")->onDelete("cascade");
-            $table->text("content");
-            $table->integer("rating")->nullable();
+            $table->foreignId("user_id")->references("id")->on("users")->cascadeOnDelete();
+            $table->foreignId("room_id")->references("id")->on("rooms")->cascadeOnDelete();
+            $table->date("check_in");
+            $table->date("check_out");
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('reservations');
     }
 };
